@@ -49,7 +49,7 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 		return label;
 	}
 	public void setLabel(String label) {
-		if (label != null || label != "") {
+		if (label != null && label != "") {
 			if (txt_lbl != null)
 				txt_lbl.setText(label);
 			this.label = label;
@@ -61,6 +61,8 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	}
 	public void setProgress(Integer sofar) {
 		if (sofar != null) {
+			if (!inprogress)
+				startProgress(progress_max);
 			progress_sofar = sofar;
 			if (progress != null)
 				progress.setProgress(sofar);
@@ -69,17 +71,6 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	public int getProgressMax() {
 		return progress_max;
 	}
-    public void setProgressMax(Integer max) {
-    	if (max != null && max > 1) {
-    		if (progress != null) {
-	    		progress.setIndeterminate(false);
-	    		progress.setMax(max);
-    		} else {
-    			Log.i(TAG,"setProgressMax() - view not created yet, postponing");
-    		}
-    		progress_max = max;
-    	}
-    }
 	public boolean isErrorDisplayed() {
 		return error_displayed;
 	}
@@ -101,27 +92,40 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 			txt_error.setText("");
 	}
 	@Override
-    public void startProgress() {
+    public void startProgress(Integer max) {
 		//Log.v(TAG, "startProgress() - initializing progress_flat");
+		if (inprogress && max == null)
+			return;
+		// show the view
 		if (thisView != null) {
 			thisView.setVisibility(View.VISIBLE);
 		}
+		
+		// update the view if it is created
 		if (progress != null) {
 			progress.setEnabled(true);
 			progress.setProgress(0);
-			progress.setIndeterminate(true);
+	    	if (max != null && max > 1) {
+		    		progress.setIndeterminate(false);
+		    		progress.setMax(max);
+	    	} else {
+	    		progress.setIndeterminate(true);
+	    	}
 		} else {
 			Log.i(TAG,"startProgress() - view not created yet, postponing start");
 		}
+		
+		// set persistent values
 		inprogress = true;
 		progress_sofar = 0;
-		progress_max = 0;
+		if (max != null)
+			progress_max = max;
     }
 	@Override
 	public void onProgress(ProgressUpdate u) {
 		// unpack the update
 		if (u != null) {
-			setProgressMax(u.max);
+			startProgress(u.max);
 			setProgress(u.sofar);
 			updateError(u.error);
 			setLabel(u.label);
@@ -177,8 +181,7 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 			convertView.setVisibility(View.GONE);
 		} else {
 			if (inprogress) {
-				startProgress();
-				setProgressMax(progress_max);
+				startProgress(progress_max);
 				setProgress(progress_sofar);
 			}
 			if (error_displayed)
@@ -202,8 +205,7 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	public void restoreItemState(Bundle s) {
 		if (s != null) {
 			if (s.getBoolean("inprogress", false)) {
-				startProgress();
-				setProgressMax(s.getInt("progress_max",0));
+				startProgress(s.getInt("progress_max",0));
 				setProgress(s.getInt("progress_sofar",0));
 			}
 			if (s.getBoolean("error_displayed", false)) {

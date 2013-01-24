@@ -1,5 +1,7 @@
 package com.masenf.core.async;
 
+import java.util.UUID;
+
 import com.masenf.core.progress.ProgressManager;
 import com.masenf.core.progress.ProgressCallback;
 import com.masenf.core.progress.ProgressItem;
@@ -10,24 +12,28 @@ import android.util.Log;
 
 public abstract class ProgressReportingTask<Params, Result> extends AsyncTask<Params, ProgressUpdate, Result> {
 
-	private static final String TAG = "BaseTask";
+	private static final String TAG = "ProgressReportingTask";
 	protected ProgressManager pg = null;
-	private String tag = "Default";
+	private String taskid = "Default";
 	private String error = "";
 	
-	public void setTag(String tag) {
-		pg = ProgressManager.getInstance();
-		this.tag = tag;
-	}
 	private ProgressCallback getProgressCallback() {
 		// this stays private to prevent stupid errors like updating the progress from the bg thread
 		// use publishProgress(ProgressUpdate) to update the UI safely
-		if (pg != null)
-			return pg.getProgressCallback(tag);
+		if (pg != null) {
+			return pg.getProgressCallback(taskid);
+		} else {
+			Log.w(TAG,"getProgressCallback() can't get callback because ProgressManager is null");
+		}
 		return new ProgressCallback();
 	}
 	protected void postError(String msg) {
 		publishProgress(new ProgressUpdate(msg));
+	}
+	protected void postLabel(String label) {
+		ProgressUpdate p = new ProgressUpdate();
+		p.label = label;
+		publishProgress(p);
 	}
 	protected void appendError(String msg) {
 		error += msg;
@@ -50,14 +56,18 @@ public abstract class ProgressReportingTask<Params, Result> extends AsyncTask<Pa
 	
 	@Override
 	protected void onPreExecute() {
+		Log.v(TAG,"onPreExecute() for " + getClass().getName());
+		pg = ProgressManager.getInstance();
+		taskid = UUID.randomUUID().toString();		// generate a nice random tag for this task
 		if (pg != null) {
-			ProgressCallback p = pg.createProgressCallback(tag);
-			p.startProgress();
+			ProgressCallback p = pg.createProgressCallback(taskid);
+			p.startProgress(null);
 			ProgressUpdate up = new ProgressUpdate();
 			up.setLabel(getClass().getName());
 			p.onProgress(up);
+		} else {
+			Log.w(TAG,"onPreExecute() can't update progress because ProgressManager is null");
 		}
-		Log.v(TAG,"onPreExecute() for " + getClass().getName());
 	}
 	
 	@Override 
@@ -74,10 +84,10 @@ public abstract class ProgressReportingTask<Params, Result> extends AsyncTask<Pa
 			ProgressCallback cb = getProgressCallback();
 			cb.stopProgress();
 			if (hasError()) 
-				cb.notifyComplete(true, tag);
+				cb.notifyComplete(true, taskid);
 			else {
 				cb.updateError(error);
-				cb.notifyComplete(false, tag);
+				cb.notifyComplete(false, taskid);
 			}
 		}
 		Log.v(TAG,"onPostExecute() for " + getClass().getName());

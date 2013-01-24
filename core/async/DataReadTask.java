@@ -13,7 +13,6 @@ public class DataReadTask extends ProgressReportingTask<DataQuery, EntryList> {
 	private DataReadCallback cb;
 	public DataReadTask(DataReadCallback cb) {
 		this.cb = cb;
-		setTag(UUID.randomUUID().toString());
 	}
 	@Override
 	protected EntryList doInBackground(DataQuery... params) {

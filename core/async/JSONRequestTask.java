@@ -17,7 +17,6 @@ public class JSONRequestTask extends HTTPRequestTask<URL, JSONObject> {
 	
 	public JSONRequestTask(RequestCallback<JSONObject> cb) {
 		this.cb = cb;
-		setTag(UUID.randomUUID().toString());
 	}
 	@Override
 	protected JSONObject doInBackground(URL... params) {

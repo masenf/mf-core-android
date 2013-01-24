@@ -4,7 +4,7 @@ import com.masenf.core.async.callbacks.BaseCallback;
 
 public class ProgressCallback extends BaseCallback {
 	// basic progress reporting
-	public void startProgress() { };
+	public void startProgress(Integer max) { };		// set to null for indeterminate
 	public void stopProgress() { };
 	public void updateError(String msg) { };
 	
