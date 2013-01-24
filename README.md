@@ -2,6 +2,7 @@ mf-core-android
 ===============
 
 Android Libraries API Level 17
+
 Package name: com.masenf.core
 
 This repository is in active development, don't plan to use its public interfaces
@@ -12,7 +13,8 @@ to change these libraries at will and make them better.
 Feel free to use this library in whole or in part in your projects. If you create 
 substantial improvements and want to give back, I'll consider all pull requests.
 
-Copyright (c) 2013, Masen Furer <http://github.com/masenf/mf-core-android>
+Copyright (c) 2013, Masen Furer \<http://github.com/masenf/mf-core-android>
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
