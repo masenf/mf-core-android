@@ -1,6 +1,7 @@
 mf-core-android
 ===============
 
+Android Libraries API Level 17
 Package name: com.masenf.core
 
 This repository is in active development, don't plan to use its public interfaces
