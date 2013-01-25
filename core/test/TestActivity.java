@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import com.masenf.core.TabNavActivity;
 import com.masenf.core.async.JSONRequestTask;
 import com.masenf.core.async.ProgressReportingTask;
+import com.masenf.core.progress.ProgressUpdate;
 
 public class TestActivity extends TabNavActivity {
 	
@@ -23,16 +24,22 @@ public class TestActivity extends TabNavActivity {
 		protected Integer doInBackground(Integer... arg0) {
 			Log.i(TAG,"Starting Sleep Task");
 			postLabel("Sleep task: " + arg0[0] + "ms");
-			postProgressMax(arg0[0]/num_updates);
+			int max = arg0[0] / num_updates;
+			postProgressMax(max);
 			try {
-				for(int i=0;i<arg0[0]/num_updates;i++) {
-					Thread.sleep(arg0[0]/num_updates);
-					postProgress(i);
+				for(int i=0;i<max;i++) {
+					Thread.sleep(max);
+					publishProgress(new ProgressUpdate(i,max));
 				}
 			} catch (InterruptedException e) {
 				// we blew up, drat
 			}
 			return 0;
+		}
+		@Override
+		protected void onPostExecute(Integer result) {
+			postError("I'm Awake!");
+			super.onPostExecute(result);
 		}
 	}
 	

@@ -24,7 +24,6 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	private boolean inprogress = false;
 	private int progress_sofar = 0;
 	private int progress_max = 0;
-	private boolean error_displayed = false;
 	private String error_message = "";
 	private boolean iscomplete = false;
 	private String label = "";
@@ -49,12 +48,11 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 		return label;
 	}
 	public void setLabel(String label) {
-		if (label != null && label != "") {
-			if (txt_lbl != null)
-				txt_lbl.setText(label);
-			this.label = label;
-		}
-
+		if (label == null)
+			return;
+		if (txt_lbl != null)
+			txt_lbl.setText(label);
+		this.label = label;
 	}
 	public int getProgress() {
 		return progress_sofar;
@@ -71,9 +69,6 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	public int getProgressMax() {
 		return progress_max;
 	}
-	public boolean isErrorDisplayed() {
-		return error_displayed;
-	}
 	public String getErrorMessage() {
 		return error_message;
 	}
@@ -86,7 +81,6 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	
 	public void hideError() {
 		Log.d(TAG,"hideError() - hiding error message");
-		error_displayed = false;
 		error_message = "";
 		if (txt_error != null)
 			txt_error.setText("");
@@ -124,6 +118,7 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	@Override
 	public void onProgress(ProgressUpdate u) {
 		// unpack the update
+		Log.v(TAG,"onProgress() posted status update for " + tag);
 		if (u != null) {
 			startProgress(u.max);
 			setProgress(u.sofar);
@@ -132,26 +127,16 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 		}
 	}
 	@Override
-    public void stopProgress() {
-		//Log.v(TAG, "stopProgress() - disabling progress_flat");
-		inprogress = false;
-		if (progress != null) {
-	    	progress.setEnabled(false);
-		} else {
-			Log.i(TAG,"stopProgress() - view not created yet");
-		}
-    }
-	@Override
 	public void updateError(String msg) {
 		//Log.v(TAG, "updateError() - setting error message to '" + msg + "'");
-		if (msg != null && msg != "") {
-			error_displayed = true;
-			error_message = msg;
-			if (txt_error != null) {
-				txt_error.setText(msg);
-			} else {
-				Log.i(TAG,"updateError() - view not created yet, postponing message");
-			}
+		if (msg == null) {
+			return;
+		}
+		error_message = msg;
+		if (txt_error != null) {
+			txt_error.setText(msg);
+		} else {
+			Log.i(TAG,"updateError() - view not created yet, postponing message");
 		}
 	}
 	@Override
@@ -169,6 +154,8 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	}
 	@Override
 	public View updateView(View convertView) {
+		if (tag != null)
+			Log.v(TAG,"updateView() building view for " + tag);
 		// store refs
 		thisView = convertView;
 		progress = (ProgressBar) convertView.findViewById(R.id.progress_flat);
@@ -184,8 +171,7 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 				startProgress(progress_max);
 				setProgress(progress_sofar);
 			}
-			if (error_displayed)
-				updateError(error_message);
+			updateError(error_message);
 		}
 		setLabel(label);
 		convertView.setTag(this);
@@ -194,7 +180,6 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	public Bundle saveItemState() {
 		Bundle s = new Bundle();
 		s.putBoolean("inprogress", inprogress);
-		s.putBoolean("error_displayed", error_displayed);
 		s.putBoolean("iscomplete", iscomplete);
 		s.putInt("progress_sofar", progress_sofar);
 		s.putInt("progress_max", progress_max);
@@ -208,9 +193,8 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 				startProgress(s.getInt("progress_max",0));
 				setProgress(s.getInt("progress_sofar",0));
 			}
-			if (s.getBoolean("error_displayed", false)) {
-				updateError(s.getString("error_message", ""));
-			}
+			updateError(s.getString("error_message", ""));
+
 			iscomplete = s.getBoolean("iscomplete",false);
 			tag = s.getString("tag",null);
 		}

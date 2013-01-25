@@ -9,6 +9,7 @@ import com.masenf.core.async.callbacks.BaseCallback;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 public class ProgressListAdapter extends ItemDrawingListAdapter<DrawingItemList<ProgressItem>> {
@@ -22,9 +23,15 @@ public class ProgressListAdapter extends ItemDrawingListAdapter<DrawingItemList<
 		items = new DrawingItemList<ProgressItem>();
 		completeCallback = new BaseCallback() {
 			@Override
-			public void notifyComplete(boolean success, String tag) {
-				Log.v(TAG,"Progress " + tag + " has completed, removing it from list");
-				expireProgress(tag);
+			public void notifyComplete(boolean success, final String tag) {
+				Handler h = new Handler();
+				h.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						expireProgress(tag);
+					}
+					
+				}, 2000);
 			}
 		};
 		items.add(freshItem);
@@ -41,6 +48,7 @@ public class ProgressListAdapter extends ItemDrawingListAdapter<DrawingItemList<
 	public void expireProgress(String tag) {
 		// wipe out a progress tag, remove all refs
 		if (ptags.containsKey(tag)) {
+			Log.v(TAG,"expireProgress() " + tag + " has completed, removing it from list");
 			ProgressItem p = ptags.get(tag);
 			items.remove(p);
 			ptags.remove(tag);

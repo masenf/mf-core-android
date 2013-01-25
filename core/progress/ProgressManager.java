@@ -21,7 +21,6 @@ public class ProgressManager {
 		return ins;
 	}
 	public ProgressCallback getProgressCallback(String tag) {
-		Log.v(TAG,"getProgressCallback() for " + tag);
 		return progressAdapter.getCallbackByTag(tag);
 	}
 	public ProgressCallback createProgressCallback(String tag) {

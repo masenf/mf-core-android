@@ -42,6 +42,7 @@ public class TabNavActivity extends Activity {
 	@Override
 	public void onStart() {
 		super.onStart();
+		pm.getAdapter().notifyDataSetChanged();
 		FragmentManager fm = getFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
 		Fragment GlobalProgress = fm.findFragmentByTag("GlobalProgress");
@@ -54,18 +55,6 @@ public class TabNavActivity extends Activity {
 			ft.attach(fm.findFragmentByTag("GlobalProgress"));
 		}
 		ft.commit();
-	}
-	@Override
-	public void onPause() {
-		FragmentManager fm = getFragmentManager();
-		FragmentTransaction ft = fm.beginTransaction();
-		Fragment GlobalProgress = fm.findFragmentByTag("GlobalProgress");
-		if (GlobalProgress != null) {
-			Log.v(TAG,"onStop() - detaching Fragment tagged GlobalProgress");
-			ft.detach(GlobalProgress);
-		}
-		ft.commit();
-		super.onStop();
 	}
 	public void registerBackButtonCallback(IonBackButtonPressed cb) {
 		if (backButtonCallbacks == null) {
