@@ -11,6 +11,7 @@ import android.util.Log;
 
 public class ProgressManager {
 	private static final String TAG = "ProgressManager";
+	private static final int expire_delay_msec = 340;
 	private HashMap<String,ProgressItem> ptags = new HashMap<String,ProgressItem>();
 	private BaseCallback completeCallback = null;
 	private ProgressFragment pf;
@@ -26,7 +27,7 @@ public class ProgressManager {
 						expireProgress(tag);
 					}
 					
-				}, 2000);
+				}, expire_delay_msec);
 			}
 		};
 	}

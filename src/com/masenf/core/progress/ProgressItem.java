@@ -6,6 +6,8 @@ import com.masenf.core.R;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -166,10 +168,7 @@ public class ProgressItem extends ProgressCallback {
 		txt_error = (TextView) thisView.findViewById(R.id.txt_error);
 		txt_lbl = (TextView) thisView.findViewById(R.id.txt_lbl);
 		// update views
-		if (tag == null) {
-			// an uninitialized item
-			myView.setVisibility(View.GONE);
-		} else {
+		if (tag != null) {
 			if (inprogress) {
 				startProgress(progress_max);
 				setProgress(progress_sofar);
