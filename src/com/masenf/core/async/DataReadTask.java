@@ -33,7 +33,7 @@ public class DataReadTask extends ProgressReportingTask<DataQuery, EntryList> {
 			if (params.length > 1)
 				postProgress(i);
 		}
-		postError("Fetched " + result.size() + " records");
+		postStatus("Fetched " + result.size() + " records");
 		return result;
 	}
 	@Override

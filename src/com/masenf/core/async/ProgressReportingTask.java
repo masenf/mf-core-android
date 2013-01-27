@@ -28,12 +28,13 @@ public abstract class ProgressReportingTask<Params, Result> extends AsyncTask<Pa
 		return new ProgressCallback();
 	}
 	protected void postError(String msg) {
-		publishProgress(new ProgressUpdate(msg));
+		publishProgress(ProgressUpdate.error(msg));
+	}
+	protected void postStatus(String msg) {
+		publishProgress(ProgressUpdate.status(msg));
 	}
 	protected void postLabel(String label) {
-		ProgressUpdate p = new ProgressUpdate();
-		p.label = label;
-		publishProgress(p);
+		publishProgress(ProgressUpdate.label(label));
 	}
 	protected void appendError(String msg) {
 		error += msg;
@@ -62,9 +63,7 @@ public abstract class ProgressReportingTask<Params, Result> extends AsyncTask<Pa
 		if (pg != null) {
 			ProgressCallback p = pg.createProgressCallback(taskid);
 			p.startProgress(null);
-			ProgressUpdate up = new ProgressUpdate();
-			up.setLabel(getClass().getName());
-			p.onProgress(up);
+			p.onProgress(ProgressUpdate.label(getClass().getName()));
 		} else {
 			Log.w(TAG,"onPreExecute() can't update progress because ProgressManager is null");
 		}

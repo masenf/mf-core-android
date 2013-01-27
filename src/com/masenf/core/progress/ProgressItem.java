@@ -23,7 +23,8 @@ public class ProgressItem extends ProgressCallback {
 	private boolean inprogress = false;
 	private int progress_sofar = 0;
 	private int progress_max = 0;
-	private String error_message = "";
+	private String status_message = "";
+	private boolean haserror = false;
 	private boolean iscomplete = false;
 	private String label = "";
 	
@@ -33,6 +34,9 @@ public class ProgressItem extends ProgressCallback {
 	}
 	public String getTag() { 
 		return tag;
+	}
+	public boolean hasError() {
+		return haserror;
 	}
 	public View getView() {
 		return thisView;
@@ -74,8 +78,8 @@ public class ProgressItem extends ProgressCallback {
 	public int getProgressMax() {
 		return progress_max;
 	}
-	public String getErrorMessage() {
-		return error_message;
+	public String getStatusMessage() {
+		return status_message;
 	}
 	
 	public ProgressItem() {
@@ -84,9 +88,9 @@ public class ProgressItem extends ProgressCallback {
 		restoreItemState(state);
 	}
 	
-	public void hideError() {
-		Log.d(TAG,"hideError() - hiding error message");
-		error_message = "";
+	public void hideStatus() {
+		Log.d(TAG,"hideStatus() - hiding status message");
+		status_message = "";
 		if (txt_error != null)
 			txt_error.setText("");
 	}
@@ -126,6 +130,7 @@ public class ProgressItem extends ProgressCallback {
 			Log.v(TAG,"onProgress() posted status update for " + tag);
 			startProgress(u.max);
 			setProgress(u.sofar);
+			updateStatus(u.status);
 			updateError(u.error);
 			setLabel(u.label);
 		} else {
@@ -134,20 +139,29 @@ public class ProgressItem extends ProgressCallback {
 	}
 	@Override
 	public void updateError(String msg) {
+		if (msg == null)
+			return;
+		haserror = true;
+		updateStatus(msg);
+	}
+	@Override
+	public void updateStatus(String msg) {
 		//Log.v(TAG, "updateError() - setting error message to '" + msg + "'");
 		if (msg == null) {
 			return;
 		}
-		error_message = msg;
+		status_message = msg;
 		if (txt_error != null) {
 			txt_error.setText(msg);
 		} else {
-			Log.i(TAG,"updateError() - view not created yet, postponing message");
+			Log.i(TAG,"updateStatus() - view not created yet, postponing message");
 		}
 	}
 	@Override
 	public void notifyComplete(boolean success, String tag) {
 		super.notifyComplete(success, tag);
+		if (!success)
+			haserror = true;
 		iscomplete = true;
 		setProgress(progress_max);		// make sure the bar is all the way over
 		if (cb != null)
@@ -173,7 +187,7 @@ public class ProgressItem extends ProgressCallback {
 				startProgress(progress_max);
 				setProgress(progress_sofar);
 			}
-			updateError(error_message);
+			updateStatus(status_message);
 		}
 		setLabel(label);
 		myView.setTag(this);
@@ -182,9 +196,10 @@ public class ProgressItem extends ProgressCallback {
 		Bundle s = new Bundle();
 		s.putBoolean("inprogress", inprogress);
 		s.putBoolean("iscomplete", iscomplete);
+		s.putBoolean("haserror", haserror);
 		s.putInt("progress_sofar", progress_sofar);
 		s.putInt("progress_max", progress_max);
-		s.putString("error_message", error_message);
+		s.putString("status_message", status_message);
 		s.putString("tag", tag);
 		return s;
 	}
@@ -193,8 +208,9 @@ public class ProgressItem extends ProgressCallback {
 			inprogress = s.getBoolean("inprogress", false);
 			progress_max = s.getInt("progress_max",0);
 			progress_sofar = s.getInt("progress_sofar",0);
-			error_message = s.getString("error_message");
+			status_message = s.getString("status_message");
 			iscomplete = s.getBoolean("iscomplete",false);
+			haserror = s.getBoolean("haserror",false);
 			tag = s.getString("tag");
 		
 			// update the UI if it is drawn

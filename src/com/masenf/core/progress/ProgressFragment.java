@@ -26,6 +26,7 @@ public class ProgressFragment extends Fragment {
 	private Handler h = new Handler();
 	private boolean pruning = false;
 	
+	private static final int display_delay_msec = 250;		// wait this long before displaying a progress item
 	private static final int fade_time_msec = 250;
 	private static final int prune_delay_msec = 400;
 
@@ -52,16 +53,24 @@ public class ProgressFragment extends Fragment {
 		}
 		super.onDestroyView();
 	}
-	public void onCreateItem(ProgressItem p) {
-		Log.v(TAG,"onCreateItem() - inflating new progress_item.xml");
-		View v = getActivity().getLayoutInflater().inflate(R.layout.progress_item, ll, false);
-		p.setView(v);
-		ll.addView(v, cindex);
-		ll.requestLayout();
-		final Animation in = new AlphaAnimation(0.0f,1.0f);
-		in.setDuration(fade_time_msec);
-		v.startAnimation(in);
-		cindex++;
+	public void onCreateItem(final ProgressItem p) {
+		// delay the creation of the view to prevent jittering
+		h.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if (!p.isComplete() || p.hasError()) {	// only create the view if still in progress or is showing an error
+					Log.v(TAG,"onCreateItem() - inflating new progress_item.xml");
+					View v = getActivity().getLayoutInflater().inflate(R.layout.progress_item, ll, false);
+					p.setView(v);
+					ll.addView(v, cindex);
+					ll.requestLayout();
+					final Animation in = new AlphaAnimation(0.0f,1.0f);
+					in.setDuration(fade_time_msec);
+					v.startAnimation(in);
+					cindex++;
+				}
+			}
+		}, display_delay_msec);
 	}
 	public void onExpireItem(final ProgressItem p) {
 		Log.v(TAG,"onExpireItem() - removing " + p.getTag() + " from the view");
