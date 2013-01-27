@@ -2,57 +2,32 @@ package com.masenf.core;
 
 import java.util.ArrayList;
 
-import com.masenf.core.progress.ProgressCallback;
+import com.masenf.core.progress.ProgressActivity;
 import com.masenf.core.progress.ProgressFragment;
-import com.masenf.core.progress.ProgressListAdapter;
 import com.masenf.core.progress.ProgressManager;
 import com.masenf.core.R;
-import com.masenf.core.R.id;
-import com.masenf.core.R.layout;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
-public class TabNavActivity extends Activity {
+public class TabNavActivity extends ProgressActivity {
 
 	private static final String TAG = "TabNavActivity";
 	protected int sel_tab = 0;
 	protected int prev_tab = -1;
-	private ProgressManager pm;
 	private ArrayList<IonBackButtonPressed> backButtonCallbacks;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate() - TabNavActivity created");
-		this.setContentView(R.layout.tabnav_activity);
 		
 		if (savedInstanceState != null) {
 			sel_tab = savedInstanceState.getInt("active_tab_idx", 0);
 			prev_tab = savedInstanceState.getInt("prev_tab", -1);
 		}
-		
-		Log.v(TAG,"onCreate() - attempting to initialize ProgressManager");
-		pm = ProgressManager.initManager(this);
-	}
-	@Override
-	public void onStart() {
-		super.onStart();
-		pm.getAdapter().notifyDataSetChanged();
-		FragmentManager fm = getFragmentManager();
-		FragmentTransaction ft = fm.beginTransaction();
-		Fragment GlobalProgress = fm.findFragmentByTag("GlobalProgress");
-		if (GlobalProgress == null) {
-			Log.v(TAG,"onStart() - creating Fragment tagged GlobalProgress");
-			ft.add(R.id.progress_fragment_placeholder, new ProgressFragment(pm.getAdapter()), "GlobalProgress");
-		} else {
-			((ProgressFragment) GlobalProgress).setAdapter(pm.getAdapter());
-		}
-		ft.commit();
 	}
 	public void registerBackButtonCallback(IonBackButtonPressed cb) {
 		if (backButtonCallbacks == null) {

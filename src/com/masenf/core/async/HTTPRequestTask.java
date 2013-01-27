@@ -18,15 +18,19 @@ public abstract class HTTPRequestTask<Params, Result> extends ProgressReportingT
 		Log.v(TAG, "makeRequest() beginning async fetch of " + url.toString());
 		BufferedInputStream bis = null;
 		try {
+			postError("Connecting...");
 			urlConnection = (HttpURLConnection) url.openConnection();
+			postError("Connection established, awaiting reply");
 		} catch (IOException e1) {
 			appendError("IOException creating connection: " + e1.getMessage());
 			return bis;
 		}
 		try {
+			postError("Fetching data...");
 			if (urlConnection.getResponseCode() == 200)
 			{
 				Log.v(TAG, "makeRequest() request successful, data is " + urlConnection.getContentLength() + " bytes");
+
 				postProgressMax(urlConnection.getContentLength());
 				InputStream is = urlConnection.getInputStream();
 				bis = new BufferedInputStream(is);
@@ -56,8 +60,8 @@ public abstract class HTTPRequestTask<Params, Result> extends ProgressReportingT
 				for (int i=0;i<bytes_read;i++)
 					res.append((char) raw[i]);
 				postProgress(total_bytes);
-				Log.v(TAG, "Just read " + bytes_read + " bytes");
 			}
+			postError("OK...received " + total_bytes + " bytes");
 		} catch (IOException e) {
 			appendError("IOException reading response: " + e.toString());
 		} finally {

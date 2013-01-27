@@ -1,62 +1,58 @@
 package com.masenf.core.progress;
 
-import com.masenf.core.fragment.StateSavingFragment;
+import java.util.Collection;
 import com.masenf.core.R;
 
 import android.app.Fragment;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 
-public class ProgressFragment extends StateSavingFragment {
+public class ProgressFragment extends Fragment {
 	private static final String TAG = "ProgressFragment";
-	private ProgressListAdapter ad;
-	public void setAdapter(ProgressListAdapter ad) {
-		this.ad = ad;
-	}
+	private LinearLayout ll;
+	private int cindex = 0;
 
-	private ListView lv;
-	
-	public ProgressFragment() {
-		super();
-	}
-	public ProgressFragment (ProgressListAdapter ad) {
-		super();
-		this.ad = ad;
-	}	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 		Log.v(TAG, "onCreateView() - inflating layout");
 		// Inflate the layout for this fragment
-    	View v = inflater.inflate(R.layout.list_fragment, container, false);
-    	lv = (ListView) v.findViewById(android.R.id.list);
-        return v;
-    }
-	
-	@Override
-	public void onResume() {
-		// don't continue resuming if we don't have an adapter
-		if (ad == null) {
-			Log.v(TAG,"onResume() - adapter is null, this isn't going to work");
-			return;
+		ll = new LinearLayout(getActivity());
+		ll.setOrientation(LinearLayout.VERTICAL);
+		ll.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		Collection<ProgressItem> items = ProgressManager.getInstance().getAllItems();
+		for (ProgressItem p : items) {
+			onCreateItem(p);
 		}
-		super.onResume();
-		lv.setAdapter(ad);
-		lv.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				Log.v(TAG,"Clicked a progress bar");
-			}
-		});
+    	return ll;
+    }
+	@Override
+	public void onDestroyView() {
+		// nullify all the views
+		Collection<ProgressItem> items = ProgressManager.getInstance().getAllItems();
+		for (ProgressItem p : items) {
+			p.setView(null);
+		}
+		super.onDestroyView();
+	}
+	public void onCreateItem(ProgressItem p) {
+		Log.v(TAG,"onCreateItem() - inflating new progress_item.xml");
+		View v = getActivity().getLayoutInflater().inflate(R.layout.progress_item, ll, false);
+		p.setView(v);
+		ll.addView(v, cindex);
+		ll.requestLayout();
+		cindex++;
+	}
+	public void onExpireItem(ProgressItem p) {
+		Log.v(TAG,"onExpireItem() - removing " + p.getTag() + " from the view");
+		ll.removeView(p.getView());
+		p.setView(null);
+		ll.requestLayout();
+		cindex--;
 	}
 }

@@ -83,11 +83,12 @@ public abstract class ProgressReportingTask<Params, Result> extends AsyncTask<Pa
 		if (pg != null) {
 			ProgressCallback cb = getProgressCallback();
 			cb.stopProgress();
-			if (hasError()) 
-				cb.notifyComplete(true, taskid);
-			else {
+			if (hasError()) {
 				cb.updateError(error);
 				cb.notifyComplete(false, taskid);
+			}
+			else {
+				cb.notifyComplete(true, taskid);
 			}
 		}
 		Log.v(TAG,"onPostExecute() for " + getClass().getName());

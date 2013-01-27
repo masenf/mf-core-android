@@ -1,6 +1,5 @@
 package com.masenf.core.progress;
 
-import com.masenf.core.DrawingItem;
 import com.masenf.core.async.callbacks.BaseCallback;
 import com.masenf.core.R;
 
@@ -10,7 +9,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class ProgressItem extends ProgressCallback implements DrawingItem {
+public class ProgressItem extends ProgressCallback {
 
 	private static final String TAG = "ProgressItem";
 	
@@ -32,6 +31,9 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	}
 	public String getTag() { 
 		return tag;
+	}
+	public View getView() {
+		return thisView;
 	}
 	public void setCallback(BaseCallback cb) {
 		this.cb = cb;
@@ -61,11 +63,6 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 				startProgress(progress_max);
 			progress_sofar = sofar;
 			if (progress != null) {
-				if (!thisView.isShown() ) {
-					// we've got a bogus view, need to reload
-					ProgressManager.getInstance().getAdapter().notifyDataSetChanged();
-					return;
-				}
 				progress.setProgress(sofar);
 			}
 		} else {
@@ -149,30 +146,29 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	@Override
 	public void notifyComplete(boolean success, String tag) {
 		super.notifyComplete(success, tag);
-		if (success)
-			hideError();
 		iscomplete = true;
 		setProgress(progress_max);		// make sure the bar is all the way over
 		if (cb != null)
 			cb.notifyComplete(success, getTag());
 	}
-	@Override
-	public int getViewLayout() {
-		return R.layout.progress_item;
-	}
-	@Override
-	public View updateView(View convertView) {
+	public void setView(View myView) {
+		thisView = myView;
+		if (thisView == null) {
+			progress = null;
+			txt_error = null;
+			txt_lbl = null;
+			return;
+		}
 		if (tag != null)
-			Log.v(TAG,"updateView() building view for " + tag + ". View id = " + convertView.toString());
+			Log.v(TAG,"updateView() building view for " + tag + ". View id = " + myView.toString());
 		// store refs
-		thisView = convertView;
 		progress = (ProgressBar) thisView.findViewById(R.id.progress_flat);
 		txt_error = (TextView) thisView.findViewById(R.id.txt_error);
 		txt_lbl = (TextView) thisView.findViewById(R.id.txt_lbl);
 		// update views
 		if (tag == null) {
 			// an uninitialized item
-			convertView.setVisibility(View.GONE);
+			myView.setVisibility(View.GONE);
 		} else {
 			if (inprogress) {
 				startProgress(progress_max);
@@ -181,9 +177,7 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 			updateError(error_message);
 		}
 		setLabel(label);
-		updateError(convertView.toString());
-		convertView.setTag(this);
-		return convertView;
+		myView.setTag(this);
 	}
 	public Bundle saveItemState() {
 		Bundle s = new Bundle();
@@ -206,7 +200,7 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 		
 			// update the UI if it is drawn
 			if (thisView != null) {
-				updateView(thisView);
+				setView(thisView);
 			}
 		}
 	}
