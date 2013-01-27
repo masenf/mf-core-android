@@ -2,9 +2,7 @@ package com.masenf.core.progress;
 
 import com.masenf.core.DrawingItem;
 import com.masenf.core.async.callbacks.BaseCallback;
-import com.masenf.wtaandroid.R;
-import com.masenf.wtaandroid.R.id;
-import com.masenf.wtaandroid.R.layout;
+import com.masenf.core.R;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -62,8 +60,16 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 			if (!inprogress)
 				startProgress(progress_max);
 			progress_sofar = sofar;
-			if (progress != null)
+			if (progress != null) {
+				if (!thisView.isShown() ) {
+					// we've got a bogus view, need to reload
+					ProgressManager.getInstance().getAdapter().notifyDataSetChanged();
+					return;
+				}
 				progress.setProgress(sofar);
+			}
+		} else {
+			Log.i(TAG,"setProgress() - view not created yet, postponing update");
 		}
 	}
 	public int getProgressMax() {
@@ -111,19 +117,20 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 		
 		// set persistent values
 		inprogress = true;
-		progress_sofar = 0;
 		if (max != null)
 			progress_max = max;
     }
 	@Override
 	public void onProgress(ProgressUpdate u) {
 		// unpack the update
-		Log.v(TAG,"onProgress() posted status update for " + tag);
 		if (u != null) {
+			Log.v(TAG,"onProgress() posted status update for " + tag);
 			startProgress(u.max);
 			setProgress(u.sofar);
 			updateError(u.error);
 			setLabel(u.label);
+		} else {
+			Log.w(TAG,"onProgress() posted a NULL status update for " + tag);
 		}
 	}
 	@Override
@@ -145,6 +152,7 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 		if (success)
 			hideError();
 		iscomplete = true;
+		setProgress(progress_max);		// make sure the bar is all the way over
 		if (cb != null)
 			cb.notifyComplete(success, getTag());
 	}
@@ -155,13 +163,12 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	@Override
 	public View updateView(View convertView) {
 		if (tag != null)
-			Log.v(TAG,"updateView() building view for " + tag);
+			Log.v(TAG,"updateView() building view for " + tag + ". View id = " + convertView.toString());
 		// store refs
 		thisView = convertView;
-		progress = (ProgressBar) convertView.findViewById(R.id.progress_flat);
-		txt_error = (TextView) convertView.findViewById(R.id.txt_error);
-		txt_lbl = (TextView) convertView.findViewById(R.id.txt_lbl);
-		
+		progress = (ProgressBar) thisView.findViewById(R.id.progress_flat);
+		txt_error = (TextView) thisView.findViewById(R.id.txt_error);
+		txt_lbl = (TextView) thisView.findViewById(R.id.txt_lbl);
 		// update views
 		if (tag == null) {
 			// an uninitialized item
@@ -174,6 +181,7 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 			updateError(error_message);
 		}
 		setLabel(label);
+		updateError(convertView.toString());
 		convertView.setTag(this);
 		return convertView;
 	}
@@ -189,14 +197,17 @@ public class ProgressItem extends ProgressCallback implements DrawingItem {
 	}
 	public void restoreItemState(Bundle s) {
 		if (s != null) {
-			if (s.getBoolean("inprogress", false)) {
-				startProgress(s.getInt("progress_max",0));
-				setProgress(s.getInt("progress_sofar",0));
-			}
-			updateError(s.getString("error_message", ""));
-
+			inprogress = s.getBoolean("inprogress", false);
+			progress_max = s.getInt("progress_max",0);
+			progress_sofar = s.getInt("progress_sofar",0);
+			error_message = s.getString("error_message");
 			iscomplete = s.getBoolean("iscomplete",false);
-			tag = s.getString("tag",null);
+			tag = s.getString("tag");
+		
+			// update the UI if it is drawn
+			if (thisView != null) {
+				updateView(thisView);
+			}
 		}
 	}
 }

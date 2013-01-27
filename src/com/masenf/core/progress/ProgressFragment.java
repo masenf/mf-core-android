@@ -1,10 +1,10 @@
 package com.masenf.core.progress;
 
 import com.masenf.core.fragment.StateSavingFragment;
-import com.masenf.wtaandroid.R;
-import com.masenf.wtaandroid.adapters.TagListAdapter;
+import com.masenf.core.R;
 
 import android.app.Fragment;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,8 +31,7 @@ public class ProgressFragment extends StateSavingFragment {
 	public ProgressFragment (ProgressListAdapter ad) {
 		super();
 		this.ad = ad;
-	}
-	
+	}	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,7 +56,6 @@ public class ProgressFragment extends StateSavingFragment {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				Log.v(TAG,"Clicked a progress bar");
-				
 			}
 		});
 	}

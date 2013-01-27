@@ -1,6 +1,6 @@
 package com.masenf.core.test;
 
-import com.masenf.wtaandroid.R;
+import com.masenf.core.R;
 
 import android.os.AsyncTask;
 import android.os.Bundle;

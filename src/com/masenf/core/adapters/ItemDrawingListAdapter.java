@@ -73,6 +73,7 @@ public class ItemDrawingListAdapter<T extends DrawingItemList<?>> extends BaseAd
 		{
 			LayoutInflater inf  = LayoutInflater.from((Context) ctx);
 			convertView = inf.inflate(item.getViewLayout(), null);
+			Log.v(TAG,"getView() - generated a new view with id = " + convertView.toString());
 		}
 		return item.updateView(convertView);
 	}

@@ -1,7 +1,7 @@
 package com.masenf.core;
 
-import com.masenf.wtaandroid.R;
-import com.masenf.wtaandroid.R.id;
+import com.masenf.core.R;
+import com.masenf.core.R.id;
 
 import android.app.Activity;
 import android.app.Fragment;

@@ -6,9 +6,9 @@ import com.masenf.core.progress.ProgressCallback;
 import com.masenf.core.progress.ProgressFragment;
 import com.masenf.core.progress.ProgressListAdapter;
 import com.masenf.core.progress.ProgressManager;
-import com.masenf.wtaandroid.R;
-import com.masenf.wtaandroid.R.id;
-import com.masenf.wtaandroid.R.layout;
+import com.masenf.core.R;
+import com.masenf.core.R.id;
+import com.masenf.core.R.layout;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -50,9 +50,7 @@ public class TabNavActivity extends Activity {
 			Log.v(TAG,"onStart() - creating Fragment tagged GlobalProgress");
 			ft.add(R.id.progress_fragment_placeholder, new ProgressFragment(pm.getAdapter()), "GlobalProgress");
 		} else {
-			Log.v(TAG,"onStart() - attaching Fragment tagged GlobalProgress");
 			((ProgressFragment) GlobalProgress).setAdapter(pm.getAdapter());
-			ft.attach(fm.findFragmentByTag("GlobalProgress"));
 		}
 		ft.commit();
 	}
