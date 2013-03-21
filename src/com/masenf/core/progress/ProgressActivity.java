@@ -8,6 +8,12 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * Base activity which automatically handles the creation and updating of a 
+ * ProgressFragment and ProgressManager
+ * @author masenf
+ *
+ */
 public class ProgressActivity extends Activity {
 
 	private static final String TAG = "ProgressActivity";
@@ -32,6 +38,8 @@ public class ProgressActivity extends Activity {
 			ft.add(R.id.progress_fragment_placeholder, GlobalProgress, "GlobalProgress");
 		}
 		ft.commit();
+		
+		// update the reference to the active ProgressFragment
 		pm.setProgressFragment((ProgressFragment) GlobalProgress);
 	}
 	@Override

@@ -18,6 +18,12 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.LinearLayout;
 
+/**
+ * Controls a Fragment for the purpose of displaying ProgressItems. Uses assets:
+ *   layout/progress_item.xml
+ * @author masenf
+ *
+ */
 public class ProgressFragment extends Fragment {
 	private static final String TAG = "ProgressFragment";
 	private ArrayBlockingQueue<View> toDestroy = new ArrayBlockingQueue<View>(32);

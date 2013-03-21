@@ -1,16 +1,20 @@
 package com.masenf.core.progress;
 
-import com.masenf.core.async.callbacks.BaseCallback;
-import com.masenf.core.R;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.masenf.core.R;
+import com.masenf.core.async.callbacks.BaseCallback;
+
+/**
+ * an encapsulation of a Progress tracking and updating item which creates and renders
+ * views for display in a ProgressFragment. Uses asset layout/progress_item.xml
+ * @author masenf
+ *
+ */
 public class ProgressItem extends ProgressCallback {
 
 	private static final String TAG = "ProgressItem";
@@ -167,6 +171,10 @@ public class ProgressItem extends ProgressCallback {
 		if (cb != null)
 			cb.notifyComplete(success, getTag());
 	}
+	/**
+	 * sets the view for this item to an inflated view derived from layout/progress_item.xml
+	 * @param myView if null, disables display of this ProgressItem
+	 */
 	public void setView(View myView) {
 		thisView = myView;
 		if (thisView == null) {
