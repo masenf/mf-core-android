@@ -2,13 +2,12 @@ package com.masenf.core.async;
 
 import java.util.UUID;
 
-import com.masenf.core.progress.ProgressManager;
-import com.masenf.core.progress.ProgressCallback;
-import com.masenf.core.progress.ProgressItem;
-import com.masenf.core.progress.ProgressUpdate;
-
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.masenf.core.progress.ProgressCallback;
+import com.masenf.core.progress.ProgressManager;
+import com.masenf.core.progress.ProgressUpdate;
 
 public abstract class ProgressReportingTask<Params, Result> extends AsyncTask<Params, ProgressUpdate, Result> {
 

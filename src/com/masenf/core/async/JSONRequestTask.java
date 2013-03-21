@@ -1,14 +1,13 @@
 package com.masenf.core.async;
 
 import java.net.URL;
-import java.util.UUID;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.masenf.core.async.callbacks.RequestCallback;
-
 import android.util.Log;
+
+import com.masenf.core.async.callbacks.RequestCallback;
 
 public class JSONRequestTask extends HTTPRequestTask<URL, JSONObject> {
 		

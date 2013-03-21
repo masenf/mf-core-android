@@ -1,15 +1,16 @@
 package com.masenf.core;
 
-import com.masenf.core.R;
-import com.masenf.core.R.id;
-
+import android.annotation.TargetApi;
+import android.app.ActionBar.Tab;
+import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.ActionBar.Tab;
-import android.app.ActionBar.TabListener;
+import android.os.Build;
 import android.util.Log;
 
+// TODO: convert this to an API 11 compatible library
+@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 public class GenericTabListener<T extends Fragment> implements TabListener {
 
 	private static final String TAG = "GenericTabListener";

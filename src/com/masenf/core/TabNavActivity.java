@@ -2,16 +2,12 @@ package com.masenf.core;
 
 import java.util.ArrayList;
 
-import com.masenf.core.progress.ProgressActivity;
-import com.masenf.core.progress.ProgressFragment;
-import com.masenf.core.progress.ProgressManager;
-import com.masenf.core.R;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.masenf.core.progress.ProgressActivity;
 
 public class TabNavActivity extends ProgressActivity {
 

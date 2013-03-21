@@ -1,7 +1,6 @@
 package com.masenf.core.async;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import com.masenf.core.async.callbacks.DataReadCallback;
 import com.masenf.core.data.BaseEntry;
