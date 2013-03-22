@@ -27,4 +27,7 @@ public abstract class BaseEntry implements Serializable, DrawingItem {
 		return convertView;
 	}
 	public abstract void handleClick(EntryClickHandler entryClickHandler);
+	public boolean handleLongClick(EntryClickHandler entryClickHandler) {
+		return false;
+	}
 }
