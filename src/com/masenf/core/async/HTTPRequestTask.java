@@ -48,6 +48,7 @@ public abstract class HTTPRequestTask<Params, Result> extends ProgressReportingT
 				InputStream is = urlConnection.getInputStream();
 				bis = new BufferedInputStream(is);
 			} else {
+				appendError("Server returned error: " + urlConnection.getResponseCode() + " " + urlConnection.getResponseMessage());
 				Log.v(TAG, "makeRequest() server returned non-200: " + urlConnection.getResponseCode() + " " + urlConnection.getResponseMessage());;
 			}
 		} catch (IOException e) {
@@ -91,6 +92,7 @@ public abstract class HTTPRequestTask<Params, Result> extends ProgressReportingT
 		try {
 			bos = new BufferedOutputStream(new FileOutputStream(out));
 		} catch (FileNotFoundException e1) {
+			appendError("Error opening file " + out.toString() + " for writing.");
 			Log.w(TAG,"readToFile() Error opening file " + out.toString() + " for writing");
 			return null;
 		}

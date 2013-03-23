@@ -45,6 +45,8 @@ public abstract class ProgressReportingTask<Params, Result> extends AsyncTask<Pa
 		publishProgress(ProgressUpdate.label(label));
 	}
 	protected void appendError(String msg) {
+		if (error != "")
+			error += "\n";
 		error += msg;
 		postError(error);
 	}

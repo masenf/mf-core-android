@@ -2,6 +2,8 @@ package com.masenf.core.async;
 
 import java.util.ArrayList;
 
+import android.database.sqlite.SQLiteException;
+
 import com.masenf.core.async.callbacks.DataWriteCallback;
 import com.masenf.core.data.DataUpdateQuery;
 
@@ -18,7 +20,12 @@ public class DataWriteTask extends ProgressReportingTask<DataUpdateQuery, ArrayL
 		for (int i=0;i<params.length;i++)
 		{
 			DataUpdateQuery q = params[i];
-			ArrayList<Long> intermediate = q.execute();
+			ArrayList<Long> intermediate = null;
+			try {
+				intermediate = q.execute();
+			} catch (SQLiteException ex) {
+				appendError("Database error: " + ex.getMessage());
+			}
 			if (intermediate != null)
 				result.addAll(intermediate);
 			if (params.length > 1)

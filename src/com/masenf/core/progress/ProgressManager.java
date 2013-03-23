@@ -8,6 +8,8 @@ import com.masenf.core.async.callbacks.BaseCallback;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 /**
  * Manages the life cycle of ProgressItems across long operations, and
@@ -31,14 +33,26 @@ public class ProgressManager {
 		completeCallback = new BaseCallback() {
 			@Override
 			public void notifyComplete(boolean success, final String tag) {
-				Handler h = new Handler();
-				h.postDelayed(new Runnable() {
+				final Runnable expire = new Runnable() {
 					@Override
 					public void run() {
 						expireProgress(tag);
 					}
 					
-				}, expire_delay_msec);
+				};
+				final Handler h = new Handler();
+				if (success) {
+					h.postDelayed(expire, expire_delay_msec);
+				} else {
+					ProgressItem p = ptags.get(tag);
+					p.setLabel("Error encounter. Tap to dismiss");
+					p.getView().setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							h.post(expire);
+						}
+					});
+				}
 			}
 		};
 	}

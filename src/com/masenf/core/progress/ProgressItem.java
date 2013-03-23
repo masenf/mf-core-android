@@ -164,8 +164,11 @@ public class ProgressItem extends ProgressCallback {
 	@Override
 	public void notifyComplete(boolean success, String tag) {
 		super.notifyComplete(success, tag);
-		if (!success)
+		if (!success) {
 			haserror = true;
+			if (progress != null)
+				progress.setVisibility(View.INVISIBLE);
+		}
 		iscomplete = true;
 		setProgress(progress_max);		// make sure the bar is all the way over
 		if (cb != null)

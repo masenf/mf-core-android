@@ -23,7 +23,7 @@ public class JSONRequestTask extends HTTPRequestTask<URL, JSONObject> {
 		try {
 			res_data = new JSONObject(readToString(makeRequest(params[0])));
 		} catch (JSONException e) {
-			appendError("JSONException processing request: " + e.toString());
+			appendError("Request error: " + e.toString());
 		} finally {
 			if (res_data == null)
 				res_data = new JSONObject();
