@@ -1,8 +1,13 @@
 package com.masenf.core.async;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -68,5 +73,39 @@ public abstract class HTTPRequestTask<Params, Result> extends ProgressReportingT
 			urlConnection.disconnect();		// close the connection
 		}
 		return res.toString();
+	}
+	protected File readToFile(BufferedInputStream bis, File out) {
+		if (bis == null) {
+			Log.w(TAG,"readToFile() InputStream is null");
+			return null;
+		}
+		OutputStream bos;
+		try {
+			bos = new BufferedOutputStream(new FileOutputStream(out));
+		} catch (FileNotFoundException e1) {
+			Log.w(TAG,"readToFile() Error opening file " + out.toString() + " for writing");
+			return null;
+		}
+		byte[] raw = new byte[BufferSz];
+		int total_bytes = 0;
+		int bytes_read = 0;
+		try {		
+			do {
+				total_bytes += bytes_read;
+				postProgress(total_bytes);
+				bos.write(raw, 0, bytes_read);
+				
+				bytes_read = bis.read(raw);
+			} while (bytes_read > -1);
+			bos.close();
+			bis.close();
+			Log.v(TAG,"Downloaded " + total_bytes + " bytes");
+			postStatus("OK...received " + total_bytes + " bytes");
+		} catch (IOException e) {
+			appendError("IOException reading response: " + e.toString());
+		} finally {
+			urlConnection.disconnect();		// close the connection
+		}
+		return out;
 	}
 }
