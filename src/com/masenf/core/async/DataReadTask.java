@@ -16,12 +16,7 @@ public class DataReadTask extends ProgressReportingTask<DataQuery, EntryList> {
 	@Override
 	protected EntryList doInBackground(DataQuery... params) {
 		EntryList result = new EntryList();
-		// a speedup loop
-//		postProgressMax(500);
-//		for (int i=0;i<500;i++) {
-//			UUID.randomUUID();
-//			postProgress(i);
-//		}
+
 		postProgressMax(params.length);
 		for (int i=0;i<params.length;i++)
 		{

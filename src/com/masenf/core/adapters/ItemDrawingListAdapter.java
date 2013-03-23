@@ -1,13 +1,5 @@
 package com.masenf.core.adapters;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.masenf.core.DrawingItem;
-import com.masenf.core.DrawingItemList;
-import com.masenf.core.data.BaseEntry;
-import com.masenf.core.data.EntryList;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import com.masenf.core.DrawingItem;
+import com.masenf.core.DrawingItemList;
 
 public class ItemDrawingListAdapter<T extends DrawingItemList<?>> extends BaseAdapter {
 	private static final String TAG = "ItemDrawingListAdapter";

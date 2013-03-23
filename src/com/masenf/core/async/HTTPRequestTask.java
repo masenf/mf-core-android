@@ -13,6 +13,14 @@ import java.net.URL;
 
 import android.util.Log;
 
+/**
+ * Make an HTTP Request in the background.<br><br>
+ * Subclasses must call the protected methods here to do anything useful with the class.
+ * @author masenf
+ *
+ * @param <Params> usually will be URL or something to generate a URL from
+ * @param <Result> the object returned by the Task
+ */
 public abstract class HTTPRequestTask<Params, Result> extends ProgressReportingTask<Params, Result> {
 
 	private static final String TAG = "HTTPRequestTask";

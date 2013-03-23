@@ -8,11 +8,14 @@ import com.masenf.core.EntryClickHandler;
 import android.database.Cursor;
 import android.view.View;
 
+/**
+ * Database objects should extend this class to integrate with the
+ * ItemDrawingListAdapter
+ * @author masenf
+ *
+ */
 public abstract class BaseEntry implements Serializable, DrawingItem {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8315724082631937273L;
 	
 	public long _id = 0;

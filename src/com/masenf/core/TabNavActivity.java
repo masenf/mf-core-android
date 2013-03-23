@@ -9,6 +9,11 @@ import android.util.Log;
 
 import com.masenf.core.progress.ProgressActivity;
 
+/**
+ * Base class for a Tabbed Fragment nagivation system with progress reporting.
+ * @author masenf
+ *
+ */
 public class TabNavActivity extends ProgressActivity {
 
 	private static final String TAG = "TabNavActivity";

@@ -131,7 +131,7 @@ public class ProgressItem extends ProgressCallback {
 	public void onProgress(ProgressUpdate u) {
 		// unpack the update
 		if (u != null) {
-			Log.v(TAG,"onProgress() posted status update for " + tag);
+			//Log.v(TAG,"onProgress() posted status update for " + tag);
 			startProgress(u.max);
 			setProgress(u.sofar);
 			updateStatus(u.status);

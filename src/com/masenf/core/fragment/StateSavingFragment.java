@@ -4,12 +4,29 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 
+/** 
+ * <p>StateSavingFragment allows for subclasses to access/update global
+ * and instance state bundles at any point during their lifecycle. Whenever
+ * the fragment is being destroyed by the OS, the state will be
+ * saved and eventually restored when the fragment becomes active again.
+ * <p>The rationale behind this class is to make the interface around saveInstanceState
+ * and Fragment onCreate abstracted from the using code.
+ * @author masenf
+ *
+ */
 public abstract class StateSavingFragment extends Fragment {
 
 	private static final String TAG = "StateSavingFragment";
 	
-	private static Bundle globalState;		// globalState is applicable to all TabFragments
-	protected Bundle instanceState; 		// instanceState is passed in from onActivityCreated
+	/**
+	 * globalState is shared among all subclasses of StateSavingFragment
+	 */
+	private static Bundle globalState;
+	/**
+	 * private state for this instance of StateSavingFragment. Is passed in from
+	 * onActivityCreated
+	 */
+	protected Bundle instanceState;
 
 	public Bundle getInstanceState() {
 		if (instanceState == null)

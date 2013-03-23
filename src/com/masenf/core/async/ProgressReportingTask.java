@@ -9,6 +9,15 @@ import com.masenf.core.progress.ProgressCallback;
 import com.masenf.core.progress.ProgressManager;
 import com.masenf.core.progress.ProgressUpdate;
 
+/**
+ * An AsyncTask which handles updating a ProgressItem. Tasks extending 
+ * ProgressReportingTask can update their ProgressItem by calling the
+ * protected post* methods 
+ * @author masenf
+ *
+ * @param <Params> 
+ * @param <Result>
+ */
 public abstract class ProgressReportingTask<Params, Result> extends AsyncTask<Params, ProgressUpdate, Result> {
 
 	private static final String TAG = "ProgressReportingTask";
